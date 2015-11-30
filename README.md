@@ -1,8 +1,8 @@
-# ToastLUA
-The Toast Module for Scripting in LUA
+# ToastLua
+The Toast Module for Scripting in Lua
 
 # An Introduction
-ToastLUA is exactly what it sounds like, a module that allows you to code the Robot in LUA. This is made possible by the LUAJ library. A simple LUA program is shown below
+ToastLua is exactly what it sounds like, a module that allows you to code the Robot in Lua. This is made possible by the LuaJ library. A simple Lua program is shown below
 ```lua
 states.transition(function(newState)
   print("I'm in: " .. newState .. "!")
