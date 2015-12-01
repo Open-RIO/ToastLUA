@@ -50,7 +50,13 @@ dependencies {
   deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
 
+def robotManifest = {
+  attributes 'Toast-Plugin-Class': 'jaci.openrio.module.lua.ToastLUA'
+}
+
 jar {
+	manifest robotManifest
+
     from configurations.buildJars.collect {
         it.isDirectory() ? it : zipTree(it)
     }
