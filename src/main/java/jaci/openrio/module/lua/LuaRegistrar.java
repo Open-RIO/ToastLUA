@@ -1,9 +1,6 @@
 package jaci.openrio.module.lua;
 
-import jaci.openrio.module.lua.libs.LibController;
-import jaci.openrio.module.lua.libs.LibLog;
-import jaci.openrio.module.lua.libs.LibMotor;
-import jaci.openrio.module.lua.libs.LibState;
+import jaci.openrio.module.lua.libs.*;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 
@@ -39,6 +36,10 @@ public class LuaRegistrar {
         registerLibrary(new LibMotor());
         registerLibrary(new LibState());
         registerLibrary(new LibController());
+        registerLibrary(new LibCommand());
+        registerLibrary(new LibThreading());
+        registerLibrary(new LibDigital());
+        LibGlobals.init();
     }
 
 }

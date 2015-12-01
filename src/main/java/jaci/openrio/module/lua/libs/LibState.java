@@ -7,22 +7,20 @@ import jaci.openrio.toast.lib.state.StateListener;
 import org.luaj.vm2.LuaClosure;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
 
 public class LibState extends LuaLibrary {
 
     public LibState() {
-        super("states");
+        super("State");
 
         registerFunction("disabled", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue arg) {
                 LuaClosure closure = arg.checkclosure();
-                StateTracker.addTicker(new StateListener.Ticker() {
-                    @Override
-                    public void tickState(RobotState state) {
-                        if (state.equals(RobotState.DISABLED))
-                            closure.call();
-                    }
+                StateTracker.addTicker(state -> {
+                    if (state.equals(RobotState.DISABLED))
+                        closure.call();
                 });
                 return null;
             }
@@ -32,12 +30,9 @@ public class LibState extends LuaLibrary {
             @Override
             public LuaValue call(LuaValue arg) {
                 LuaClosure closure = arg.checkclosure();
-                StateTracker.addTicker(new StateListener.Ticker() {
-                    @Override
-                    public void tickState(RobotState state) {
-                        if (state.equals(RobotState.AUTONOMOUS))
-                            closure.call();
-                    }
+                StateTracker.addTicker(state -> {
+                    if (state.equals(RobotState.AUTONOMOUS))
+                        closure.call();
                 });
                 return null;
             }
@@ -47,12 +42,20 @@ public class LibState extends LuaLibrary {
             @Override
             public LuaValue call(LuaValue arg) {
                 LuaClosure closure = arg.checkclosure();
-                StateTracker.addTicker(new StateListener.Ticker() {
-                    @Override
-                    public void tickState(RobotState state) {
-                        if (state.equals(RobotState.TELEOP))
-                            closure.call();
-                    }
+                StateTracker.addTicker(state -> {
+                    if (state.equals(RobotState.TELEOP))
+                        closure.call();
+                });
+                return null;
+            }
+        });
+
+        registerFunction("tick", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                LuaClosure closure = arg.checkclosure();
+                StateTracker.addTicker(state -> {
+                    closure.call(state.state);
                 });
                 return null;
             }
@@ -62,14 +65,18 @@ public class LibState extends LuaLibrary {
             @Override
             public LuaValue call(LuaValue arg) {
                 LuaClosure closure = arg.checkclosure();
-                StateTracker.addTransition(new StateListener.Transition() {
-                    @Override
-                    public void transitionState(RobotState state, RobotState oldState) {
-                        if (oldState != null)
-                            closure.call(valueOf(state.state), valueOf(oldState.state));
-                    }
+                StateTracker.addTransition((newstate, oldstate) -> {
+                    if (oldstate != null)
+                        closure.call(valueOf(newstate.state), valueOf(oldstate.state));
                 });
                 return null;
+            }
+        });
+
+        registerFunction("current", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                return valueOf(StateTracker.currentState.state);
             }
         });
     }

@@ -12,6 +12,8 @@ import org.luaj.vm2.lib.VarArgFunction;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static jaci.openrio.toast.lib.registry.Registrar.*;
+
 public class LibMotor extends LuaLibrary {
 
     SpeedController[] pwm_controllers = new SpeedController[10];
@@ -19,7 +21,7 @@ public class LibMotor extends LuaLibrary {
     HashMap<String, RobotDrive> drives = new HashMap<>();
 
     public LibMotor() {
-        super("motors");
+        super("Motor");
 
         registerFunction("pwm", new VarArgFunction() {
             @Override
@@ -32,15 +34,21 @@ public class LibMotor extends LuaLibrary {
                 int pwm = arg1.checkint();
                 String type = arg2.checkjstring();
 
-                switch (type) {
-                    case "Talon":
-                        pwm_controllers[pwm] = new Talon(pwm);
+                switch (type.toLowerCase()) {
+                    case "talon":
+                        pwm_controllers[pwm] = talon(pwm);
                         break;
-                    case "Jaguar":
-                        pwm_controllers[pwm] = new Jaguar(pwm);
+                    case "jaguar":
+                        pwm_controllers[pwm] = jaguar(pwm);
                         break;
-                    case "Victor":
-                        pwm_controllers[pwm] = new Victor(pwm);
+                    case "victor":
+                        pwm_controllers[pwm] = victor(pwm);
+                        break;
+                    case "talonsrx":
+                        pwm_controllers[pwm] = talonSRX(pwm);
+                        break;
+                    case "victorsp":
+                        pwm_controllers[pwm] = victorSP(pwm);
                         break;
                 }
 
@@ -72,12 +80,12 @@ public class LibMotor extends LuaLibrary {
                 int can = arg1.checkint();
                 String type = arg2.checkjstring();
 
-                switch (type) {
-                    case "Talon":
-                        can_controllers[can] = new CANTalon(can);
+                switch (type.toLowerCase()) {
+                    case "talon":
+                        can_controllers[can] = canTalon(can);
                         break;
-                    case "Jaguar":
-                        can_controllers[can] = new CANJaguar(can);
+                    case "jaguar    ":
+                        can_controllers[can] = canJaguar(can);
                         break;
                 }
 

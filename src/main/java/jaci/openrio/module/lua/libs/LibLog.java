@@ -8,7 +8,7 @@ import org.luaj.vm2.lib.OneArgFunction;
 public class LibLog extends LuaLibrary {
 
     public LibLog() {
-        super("log");
+        super("Log");
 
         registerFunction("info", new OneArgFunction() {
             @Override

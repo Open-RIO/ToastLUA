@@ -2,6 +2,7 @@ package jaci.openrio.module.lua;
 
 import jaci.openrio.toast.core.command.CommandBus;
 import jaci.openrio.toast.lib.log.Logger;
+import jaci.openrio.toast.lib.module.ModuleConfig;
 import jaci.openrio.toast.lib.module.ToastModule;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
@@ -17,6 +18,7 @@ public class ToastLUA extends ToastModule {
 
     public static Globals luaGlobals;
     public static Logger logger;
+    public static ModuleConfig luaConfig;
 
     @Override
     public String getModuleName() {
@@ -25,13 +27,14 @@ public class ToastLUA extends ToastModule {
 
     @Override
     public String getModuleVersion() {
-        return "0.0.1";
+        return "0.1.0";
     }
 
     @Override
     public void prestart() {
-        logger = new Logger("LUA", Logger.ATTR_DEFAULT);
+        logger = new Logger("Lua", Logger.ATTR_DEFAULT);
         luaGlobals = JsePlatform.standardGlobals();
+        luaConfig = new ModuleConfig("Lua");
         CommandBus.registerCommand(new CommandLUA());
     }
 
