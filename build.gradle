@@ -15,12 +15,12 @@ buildscript {
     classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+', classifier: 'Toast'			//Change this line if you wish to Update GradleRIO
   }
 }
-
-apply plugin: 'GradleRIO'                                 //Apply the GradleRIO plugin
+  
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'GradleRIO'                                 //Apply the GradleRIO plugin
 
 repositories {
   maven {
@@ -31,6 +31,7 @@ repositories {
 
 configurations {
     buildJars
+    deployerJars
 }
 
 gradlerio.team = "5333"                                   //Your FRC team number (e.g. 5333 for team 'Can't C#', or 47 for Chief Delphi)
@@ -38,15 +39,56 @@ gradlerio.team = "5333"                                   //Your FRC team number
 gradlerio.deployFile = "toast/modules/${archivesBaseName}"
 
 archivesBaseName = "ToastLua"
+version = "0.1.0"
+group = "jaci.openrio.lua"
 
 dependencies {
   compile group: 'jaci.openrio.toast', name: 'Toast', version: '+'    //Change this line to update Toast
   compile group: 'org.luaj', name: 'luaj-jse', version: '+'
   buildJars group: 'org.luaj', name: 'luaj-jse', version: '+'
+  
+  deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
 
 jar {
     from configurations.buildJars.collect {
         it.isDirectory() ? it : zipTree(it)
     }
+}
+
+task src(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+	archives src
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+      configuration = configurations.deployerJars
+      repository(url: "scp://imjac.in/home/maven/maven") {
+        authentication(userName: "maven", password: "")
+      }
+
+      pom {
+	      groupId = project.group
+		  version = project.version
+		  artifactId = project.archivesBaseName
+		  project {
+			  name project.archivesBaseName
+			  packaging 'jar'
+			  description 'Lua language module for the Toast API'
+		  }
+		  pom*.whenConfigured { pom -> pom.dependencies.clear() }
+      }
+    }
+}
+
+uploadArchives.doFirst {
+	println "Please input maven password"
+	println()
+	def pass = System.console().readPassword().toString().trim()
+	uploadArchives.repositories.mavenDeployer.repository.authentication.password = pass
 }

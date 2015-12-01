@@ -32,6 +32,15 @@ end)
 # Sample Programs
 Sample programs can be found under the `samples/` directory.
 
+# Dependency
+To use ToastLua as a dependency in your own Toast module, add this to your `build.gradle` file:
+
+```
+dependencies {
+  compile group: 'jaci.openrio.lua', name: 'ToastLua', version: '+'
+}
+```
+
 # Downloads
 Downloads (stable) can be found on the [releases](https://github.com/Open-RIO/ToastLUA/releases), and is similar in deployment to any other Toast module. For more details, refer to the Toast Repository.
 
